@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Cart } from '../../cart/components/Cart'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { addAddressAsync, selectAddressStatus, selectAddresses } from '../../address/AddressSlice'
+import { addAddressAsync, deleteAddressByIdAsync, resetAddressDeleteStatus, selectAddressStatus, selectAddresses } from '../../address/AddressSlice'
 import { selectLoggedInUser } from '../../auth/AuthSlice'
 import { Link, useNavigate } from 'react-router-dom'
 import { createOrderAsync, selectCurrentOrder, selectOrderStatus } from '../../order/OrderSlice'
@@ -57,6 +57,9 @@ export const Checkout = () => {
     const handleCreateOrder=()=>{
         const order={user:loggedInUser._id,item:cartItems,address:selectedAddress,paymentMode:selectedPaymentMethod,total:orderTotal+SHIPPING+TAXES}
         dispatch(createOrderAsync(order))
+    }
+    const handleDelete=(address)=> {
+        dispatch(deleteAddressByIdAsync(address._id));
     }
 
   return (
@@ -134,6 +137,7 @@ export const Checkout = () => {
                                         <Stack flexDirection={'row'} alignItems={'center'}>
                                             <Radio checked={selectedAddress===address} name='addressRadioGroup' value={selectedAddress} onChange={(e)=>setSelectedAddress(addresses[index])}/>
                                             <Typography>{address.type}</Typography>
+                                            <Typography onClick={() => handleDelete(address)}>Delete</Typography>
                                         </Stack>
 
                                         {/* details */}
